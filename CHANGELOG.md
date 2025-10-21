@@ -5,7 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2024-10-21
+## [1.4.0] - 2024-10-21
+
+### ?? Added - Built-in Animated SVG Loader
+- ? **Default animated SVG loader** when no ImagePath is specified
+- ?? **Professional Blazor-themed design** with official color palette
+- ?? **Smooth CSS animations** with rotating rings and pulsing dots
+- ?? **Zero configuration required** - just add `<FlexLoader />`
+- ?? **Optimized 80x80px size** for perfect visibility
+- ?? **Maintains full customization** options for advanced users
+
+### Enhanced
+- ?? **DefaultLoaderStyle** property for SVG styling
+- ?? **Updated documentation** with default loader examples
+- ??? **New package tags** including 'svg' and 'animated'
+- ?? **README highlights** the built-in SVG feature
+
+### Technical
+- ?? **Embedded SVG** with gradients and animations
+- ?? **Conditional rendering** - SVG when no image, image when specified
+- ?? **CSS animations** for smooth performance
+- ?? **No external dependencies** - everything embedded
+
+## [1.3.4] - 2024-10-21
+
+### Fixed
+- ?? **README encoding issues** resolved
+- ?? **ASCII-compatible documentation** for universal display
+- ?? **Cross-platform compatibility** improved
+
+## [1.3.3] - 2024-10-21
 
 ### Added
 - ?? **Professional branding assets** with SVG icons
@@ -85,7 +114,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ?? **Event-driven** state management
 - ?? **Comprehensive examples** and documentation
 
-[1.3.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.2.0...v1.3.0
+[1.4.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.3.4...v1.4.0
+[1.3.4]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.3.3...v1.3.4
+[1.3.3]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.2.0...v1.3.3
 [1.2.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/daniwxcode/Blazor.FlexLoader/releases/tag/v1.0.0

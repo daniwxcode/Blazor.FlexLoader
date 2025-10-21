@@ -16,10 +16,11 @@
 
 ## Francais
 
-Un composant Blazor flexible et reutilisable pour afficher des indicateurs de chargement avec support pour des images personnalisees, du texte et du contenu custom.
+Un composant Blazor flexible et reutilisable pour afficher des indicateurs de chargement avec support pour des images personnalisees, du texte et du contenu custom. **Inclut un SVG anime par defaut !**
 
 ### Fonctionnalites
 
+- **SVG anime par defaut** - Aucune configuration requise !
 - Indicateur de chargement global pour les applications Blazor
 - Support d'images personnalisees (GIF, SVG, PNG, etc.)
 - Texte de chargement personnalisable
@@ -60,6 +61,8 @@ builder.Services.AddBlazorFlexLoader();
 <FlexLoader />
 ```
 
+**C'est tout ! Le loader affichera automatiquement un SVG anime professionnel.**
+
 ### Utilisation
 
 #### Methodes simples Show/Close
@@ -72,7 +75,7 @@ builder.Services.AddBlazorFlexLoader();
 @code {
     private async Task ShowLoader()
     {
-        LoaderService.Show(); // Afficher le loader
+        LoaderService.Show(); // Affiche le SVG anime par defaut
         
         try
         {
@@ -80,10 +83,27 @@ builder.Services.AddBlazorFlexLoader();
         }
         finally
         {
-            LoaderService.Close(); // Masquer le loader
+            LoaderService.Close(); // Masque le loader
         }
     }
 }
+```
+
+#### Loader par defaut vs personnalise
+
+```razor
+<!-- Loader par defaut avec SVG anime -->
+<FlexLoader />
+
+<!-- Loader avec image personnalisee -->
+<FlexLoader ImagePath="/images/custom-loader.gif" />
+
+<!-- Loader avec contenu custom -->
+<FlexLoader>
+    <CustomContent>
+        <div class="spinner-border" role="status"></div>
+    </CustomContent>
+</FlexLoader>
 ```
 
 #### Methodes Increment/Decrement (gestion avancee)
@@ -98,11 +118,11 @@ LoaderService.Reset();     // Forcer fermeture
 
 | Parametre | Type | Defaut | Description |
 |-----------|------|--------|-------------|
-| `ImagePath` | `string?` | `null` | Chemin vers l'image de chargement |
+| `ImagePath` | `string?` | `null` | Chemin vers l'image (si null = SVG par defaut) |
 | `Text` | `string?` | `"Chargement..."` | Texte affiche pendant le chargement |
 | `BackgroundColor` | `string` | `"rgba(255,255,255,0.75)"` | Couleur de fond de l'overlay |
 | `TextColor` | `string` | `"#333"` | Couleur du texte |
-| `ImageHeight` | `string?` | `"120px"` | Hauteur de l'image |
+| `ImageHeight` | `string?` | `"120px"` | Hauteur de l'image (n'affecte pas le SVG) |
 | `UseAbsolutePosition` | `bool` | `true` | Position absolue ou fixe |
 | `CustomContent` | `RenderFragment?` | `null` | Contenu personnalise |
 | `AutoClose` | `bool` | `true` | Fermeture automatique avec delai |
@@ -137,10 +157,11 @@ MIT
 
 ## English
 
-A flexible and reusable Blazor component for displaying loading indicators with support for custom images, text, and custom content.
+A flexible and reusable Blazor component for displaying loading indicators with support for custom images, text, and custom content. **Includes animated SVG by default!**
 
 ### Features
 
+- **Built-in animated SVG** - Zero configuration required!
 - Global loading indicator for Blazor applications
 - Support for custom images (GIF, SVG, PNG, etc.)
 - Customizable loading text
@@ -181,6 +202,8 @@ builder.Services.AddBlazorFlexLoader();
 <FlexLoader />
 ```
 
+**That's it! The loader will automatically display a professional animated SVG.**
+
 ### Usage
 
 #### Simple Show/Close methods
@@ -193,7 +216,7 @@ builder.Services.AddBlazorFlexLoader();
 @code {
     private async Task ShowLoader()
     {
-        LoaderService.Show(); // Show the loader
+        LoaderService.Show(); // Shows the default animated SVG
         
         try
         {
@@ -205,6 +228,23 @@ builder.Services.AddBlazorFlexLoader();
         }
     }
 }
+```
+
+#### Default vs Custom loader
+
+```razor
+<!-- Default loader with animated SVG -->
+<FlexLoader />
+
+<!-- Custom image loader -->
+<FlexLoader ImagePath="/images/custom-loader.gif" />
+
+<!-- Custom content loader -->
+<FlexLoader>
+    <CustomContent>
+        <div class="spinner-border" role="status"></div>
+    </CustomContent>
+</FlexLoader>
 ```
 
 #### Increment/Decrement methods (advanced management)
@@ -219,11 +259,11 @@ LoaderService.Reset();     // Force close
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `ImagePath` | `string?` | `null` | Path to the loading image |
+| `ImagePath` | `string?` | `null` | Path to image (if null = default SVG) |
 | `Text` | `string?` | `"Loading..."` | Text displayed during loading |
 | `BackgroundColor` | `string` | `"rgba(255,255,255,0.75)"` | Overlay background color |
 | `TextColor` | `string` | `"#333"` | Text color |
-| `ImageHeight` | `string?` | `"120px"` | Image height |
+| `ImageHeight` | `string?` | `"120px"` | Image height (doesn't affect SVG) |
 | `UseAbsolutePosition` | `bool` | `true` | Absolute or fixed position |
 | `CustomContent` | `RenderFragment?` | `null` | Custom content |
 | `AutoClose` | `bool` | `true` | Auto close with delay |

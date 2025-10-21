@@ -1,5 +1,4 @@
 ﻿using Blazor.FlexLoader.Services;
-
 using Microsoft.AspNetCore.Components;
 
 namespace Blazor.FlexLoader.Components;
@@ -29,6 +28,9 @@ public partial class FlexLoader : ComponentBase, IDisposable
         "display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;";
 
     private string ImageStyle => $"height:{ImageHeight};width:auto;";
+
+    private string DefaultLoaderStyle =>
+        "display:flex;align-items:center;justify-content:center;margin-bottom:10px;";
 
     private string TextStyle => $"color:{TextColor};font-size:1.1rem;margin-top:10px;";
 
