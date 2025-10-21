@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2024-10-21
+
+### Added
+- ?? **Professional branding assets** with SVG icons
+- ? **Animated icon** for documentation and web display
+- ?? **Static icon** optimized for package managers
+- ?? **Favicon** for web applications
+- ?? **Complete CI/CD pipeline** with GitHub Actions
+- ?? **Comprehensive assets documentation**
+- ?? **Automated dependency updates**
+
+### Enhanced
+- ?? **Visual identity** with Blazor-inspired design
+- ?? **README** with centered animated icon
+- ??? **Package tags** for better discoverability
+- ?? **Release notes** with detailed information
+
+### Technical
+- ?? **SVG icons** with CSS animations and gradients
+- ?? **128x128px** optimal sizing for package managers
+- ?? **Color palette** aligned with Blazor branding
+- ?? **PNG conversion instructions** for NuGet compatibility
+
 ## [1.2.0] - 2024-10-21
 
 ### Added
@@ -62,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ?? **Event-driven** state management
 - ?? **Comprehensive examples** and documentation
 
+[1.3.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/daniwxcode/Blazor.FlexLoader/releases/tag/v1.0.0
