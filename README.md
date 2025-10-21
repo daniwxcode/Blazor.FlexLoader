@@ -5,6 +5,10 @@
 [![Downloads](https://img.shields.io/nuget/dt/Blazor.FlexLoader.svg)](https://www.nuget.org/packages/Blazor.FlexLoader/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+<div align="center">
+  <img src="./assets/icon.svg" alt="Blazor.FlexLoader" width="128" height="128" />
+</div>
+
 [???? Français](#français) | [???? English](#english)
 
 ---

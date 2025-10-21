@@ -1,0 +1,43 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="blazorGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#512BD4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8A2BE2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="loaderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4ECDC4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#45B7D1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="64" cy="64" r="60" fill="url(#blazorGradient)" stroke="#fff" stroke-width="2"/>
+  
+  <!-- Main loader ring -->
+  <circle cx="64" cy="64" r="45" fill="none" stroke="url(#loaderGradient)" stroke-width="6" stroke-linecap="round" stroke-dasharray="120 40" opacity="0.9">
+    <animateTransform attributeName="transform" type="rotate" values="0 64 64;360 64 64" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Secondary loader ring -->
+  <circle cx="64" cy="64" r="30" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-dasharray="60 20" opacity="0.7">
+    <animateTransform attributeName="transform" type="rotate" values="360 64 64;0 64 64" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Center dot -->
+  <circle cx="64" cy="64" r="8" fill="#fff" opacity="0.9"/>
+  
+  <!-- Blazor-inspired dots -->
+  <circle cx="64" cy="25" r="3" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="64" cy="103" r="3" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="25" cy="64" r="3" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1s" repeatCount="indefinite" begin="0.25s"/>
+  </circle>
+  <circle cx="103" cy="64" r="3" fill="#fff" opacity="0.8">
+    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="1s" repeatCount="indefinite" begin="0.25s"/>
+  </circle>
+</svg>

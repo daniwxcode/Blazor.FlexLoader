@@ -17,6 +17,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- PackageIcon will be added when PNG version is available -->
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -38,6 +39,7 @@
     <None Include="docs\LoaderService-Documentation.md" Pack="true" PackagePath="docs\" />
     <None Include="docs\GitHub-Actions-Setup.md" Pack="true" PackagePath="docs\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+    <!-- Assets will be included when PNG icon is ready -->
   </ItemGroup>
 
   <!-- Exclude development files from NuGet package -->
