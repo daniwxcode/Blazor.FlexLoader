@@ -33,6 +33,8 @@ builder.Services.AddBlazorFlexLoader();
 
 ## Utilisation
 
+### Méthodes simples Show/Close
+
 ```csharp
 @inject LoaderService LoaderService
 
@@ -41,16 +43,45 @@ builder.Services.AddBlazorFlexLoader();
 @code {
     private async Task ShowLoader()
     {
-        LoaderService.Increment();
+        LoaderService.Show(); // Afficher le loader
+        
         try
         {
             await SomeAsyncOperation();
         }
         finally
         {
-            LoaderService.Decrement();
+            LoaderService.Close(); // Masquer le loader
         }
     }
+}
+```
+
+### Méthodes Increment/Decrement (gestion avancée)
+
+```csharp
+LoaderService.Increment(); // Compter +1
+LoaderService.Decrement(); // Compter -1
+LoaderService.Reset();     // Forcer fermeture
+```
+
+## API du LoaderService
+
+```csharp
+public class LoaderService
+{
+    public bool IsLoading { get; }
+    
+    // Méthodes simples
+    public void Show();       // Afficher
+    public void Close();      // Masquer
+    
+    // Méthodes avancées
+    public void Increment();  // Compter +1
+    public void Decrement();  // Compter -1
+    public void Reset();      // Forcer fermeture
+    
+    public event EventHandler? OnChange;
 }
 ```
 
