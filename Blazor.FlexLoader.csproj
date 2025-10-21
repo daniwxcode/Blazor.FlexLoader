@@ -7,19 +7,20 @@
     
     <!-- Package NuGet Properties -->
     <PackageId>Blazor.FlexLoader</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Authors>pwoagou</Authors>
     <Company>pwoagou</Company>
     <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom.</Description>
     <PackageTags>blazor;loader;loading;spinner;component;ui</PackageTags>
-    <PackageProjectUrl>https://github.com/pwoagou/Blazor.FlexLoader</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/pwoagou/Blazor.FlexLoader</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/daniwxcode/Blazor.FlexLoader</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/daniwxcode/Blazor.FlexLoader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReleaseNotes>v1.1.0: Ajout des méthodes Show() et Close() pour une utilisation simplifiée</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="Handlers\" />
   </ItemGroup>
 
