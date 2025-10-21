@@ -7,11 +7,11 @@
     
     <!-- Package NuGet Properties -->
     <PackageId>Blazor.FlexLoader</PackageId>
-    <Version>1.1.0</Version>
-    <Authors>pwoagou</Authors>
-    <Company>pwoagou</Company>
-    <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom.</Description>
-    <PackageTags>blazor;loader;loading;spinner;component;ui</PackageTags>
+    <Version>1.2.0</Version>
+    <Authors>daniwxcode</Authors>
+    <Company>daniwxcode</Company>
+    <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom. | A flexible Blazor component for displaying loading indicators with support for custom images, text and custom content.</Description>
+    <PackageTags>blazor;loader;loading;spinner;component;ui;dotnet9;french;english;bilingual</PackageTags>
     <PackageProjectUrl>https://github.com/daniwxcode/Blazor.FlexLoader</PackageProjectUrl>
     <RepositoryUrl>https://github.com/daniwxcode/Blazor.FlexLoader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -20,7 +20,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>v1.1.0: Ajout des méthodes Show() et Close() pour une utilisation simplifiée</PackageReleaseNotes>
+    <PackageReleaseNotes>v1.2.0: Documentation bilingue complète (FR/EN) | Complete bilingual documentation (FR/EN) - XML documentation with examples - Detailed usage guide - Best practices included</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
+    <None Include="docs\LoaderService-Documentation.md" Pack="true" PackagePath="docs\" />
   </ItemGroup>
 
 </Project>
