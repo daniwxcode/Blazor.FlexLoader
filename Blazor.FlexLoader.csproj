@@ -7,7 +7,7 @@
     
     <!-- Package NuGet Properties -->
     <PackageId>Blazor.FlexLoader</PackageId>
-    <Version>1.3.2</Version>
+    <Version>1.3.3</Version>
     <Authors>daniwxcode</Authors>
     <Company>daniwxcode</Company>
     <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom. | A flexible Blazor component for displaying loading indicators with support for custom images, text and custom content.</Description>
@@ -21,7 +21,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>v1.3.2: Fix GitHub Actions release permissions | Correction des permissions pour les releases GitHub Actions - Updated workflow permissions for GitHub releases - Fixed release creation with proper authentication - Improved CI/CD reliability</PackageReleaseNotes>
+    <PackageReleaseNotes>v1.3.3: Production-ready release with complete CI/CD | Version stable avec CI/CD complet - Workflow GitHub Actions fully functional - README display optimized - Complete automation for NuGet publishing - Professional branding and documentation</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
