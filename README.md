@@ -6,7 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 <div align="center">
-  <img src="./assets/icon.svg" alt="Blazor.FlexLoader" width="128" height="128" />
+  <img src="./assets/icon-github.svg" alt="Blazor.FlexLoader" width="128" height="128" />
+  <h3>?? Un composant Blazor flexible pour les indicateurs de chargement</h3>
 </div>
 
 [???? Français](#français) | [???? English](#english)
