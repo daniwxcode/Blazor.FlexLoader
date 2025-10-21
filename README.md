@@ -1,5 +1,10 @@
 # Blazor.FlexLoader
 
+[![CI](https://github.com/daniwxcode/Blazor.FlexLoader/actions/workflows/ci.yml/badge.svg)](https://github.com/daniwxcode/Blazor.FlexLoader/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/Blazor.FlexLoader.svg)](https://www.nuget.org/packages/Blazor.FlexLoader/)
+[![Downloads](https://img.shields.io/nuget/dt/Blazor.FlexLoader.svg)](https://www.nuget.org/packages/Blazor.FlexLoader/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 [???? Français](#français) | [???? English](#english)
 
 ---
@@ -19,6 +24,7 @@ Un composant Blazor flexible et réutilisable pour afficher des indicateurs de ch
 - ? Fermeture automatique configurable
 - ? Fermeture au clic sur l'overlay
 - ? Compatible .NET 9
+- ? CI/CD automatisé avec GitHub Actions
 
 ### ?? Installation
 
@@ -139,6 +145,7 @@ A flexible and reusable Blazor component for displaying loading indicators with 
 - ? Configurable auto-close
 - ? Close on overlay click
 - ? Compatible with .NET 9
+- ? Automated CI/CD with GitHub Actions
 
 ### ?? Installation
 
