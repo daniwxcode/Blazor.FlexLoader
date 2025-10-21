@@ -11,6 +11,12 @@ env:
   PROJECT_PATH: './Blazor.FlexLoader.csproj'
   PACKAGE_OUTPUT_DIRECTORY: './bin/Release'
 
+# Permissions nécessaires pour créer des releases
+permissions:
+  contents: write
+  packages: write
+  actions: read
+
 jobs:
   build-and-test:
     name: ?? Build & Test
@@ -79,7 +85,7 @@ jobs:
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
     
     - name: ?? Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
@@ -108,5 +114,6 @@ jobs:
           ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.snupkg
         draft: false
         prerelease: false
+        make_latest: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
