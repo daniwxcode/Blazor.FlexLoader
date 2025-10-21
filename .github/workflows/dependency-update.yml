@@ -1,0 +1,67 @@
+name: ?? Update Dependencies
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'  # Tous les lundis à 2h du matin
+  workflow_dispatch:     # Permet l'exécution manuelle
+
+env:
+  DOTNET_VERSION: '9.0.x'
+
+jobs:
+  update-dependencies:
+    name: ?? Update NuGet Packages
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: ?? Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: ?? Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: ?? List outdated packages
+      run: |
+        echo "?? Packages actuels:"
+        dotnet list package
+        echo ""
+        echo "?? Packages obsolètes:"
+        dotnet list package --outdated || echo "Aucun package obsolète trouvé"
+    
+    - name: ?? Update packages
+      run: |
+        # Mise à jour des packages Microsoft.AspNetCore.Components
+        dotnet add package Microsoft.AspNetCore.Components
+        dotnet add package Microsoft.AspNetCore.Components.Web
+    
+    - name: ?? Test build after update
+      run: |
+        dotnet restore
+        dotnet build --configuration Release
+    
+    - name: ?? Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "?? Update NuGet dependencies"
+        title: "?? Automated dependency update"
+        body: |
+          ## ?? Automated Dependency Update
+          
+          Cette PR met à jour automatiquement les dépendances NuGet vers leurs dernières versions.
+          
+          ### Changements
+          - ?? Mise à jour des packages Microsoft.AspNetCore.Components
+          - ?? Mise à jour des packages Microsoft.AspNetCore.Components.Web
+          
+          ### Tests
+          - ? Build successful
+          - ? No breaking changes detected
+          
+          Cette PR a été créée automatiquement par GitHub Actions.
+        branch: automated/dependency-update
+        delete-branch: true

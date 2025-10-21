@@ -36,6 +36,15 @@
   <ItemGroup>
     <None Include="README.md" Pack="true" PackagePath="\" />
     <None Include="docs\LoaderService-Documentation.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\GitHub-Actions-Setup.md" Pack="true" PackagePath="docs\" />
+    <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Exclude development files from NuGet package -->
+  <ItemGroup>
+    <None Remove=".github\**" />
+    <Compile Remove=".github\**" />
+    <EmbeddedResource Remove=".github\**" />
   </ItemGroup>
 
 </Project>
