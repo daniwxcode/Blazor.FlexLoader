@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Blazor.FlexLoader</id>
+    <version>1.0.0</version>
+    <title>Blazor FlexLoader</title>
+    <authors>pwoagou</authors>
+    <owners>pwoagou</owners>
+    <description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom.</description>
+    <summary>Composant Blazor pour indicateurs de chargement flexibles et personnalisables</summary>
+    <language>fr-FR</language>
+    <projectUrl>https://github.com/pwoagou/Blazor.FlexLoader</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/pwoagou/Blazor.FlexLoader/main/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/pwoagou/Blazor.FlexLoader/blob/main/LICENSE</licenseUrl>
+    <copyright>Copyright © pwoagou 2024</copyright>
+    <dependencies>
+      <group targetFramework="net9.0">
+        <dependency id="Microsoft.AspNetCore.Components" version="9.0.0" />
+        <dependency id="Microsoft.AspNetCore.Components.Web" version="9.0.0" />
+      </group>
+    </dependencies>
+    <tags>blazor loader loading spinner component ui dotnet9</tags>
+  </metadata>
+</package>

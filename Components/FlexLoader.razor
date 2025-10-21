@@ -1,0 +1,23 @@
+﻿@if (LoaderService.IsLoading)
+{
+    <div class="flexloader-overlay" style="@OverlayStyle" @onclick="OnOverlayClick">
+        @if (CustomContent is not null)
+        {
+            @CustomContent
+        }
+        else
+        {
+            <div class="flexloader-content" style="@ContentStyle">
+                @if (!string.IsNullOrEmpty(ImagePath))
+                {
+                    <img src="@ImagePath" alt="Chargement..." style="@ImageStyle" />
+                }
+                @if (!string.IsNullOrEmpty(Text))
+                {
+                    <p style="@TextStyle">@Text</p>
+                }
+            </div>
+        }
+    </div>
+}
+

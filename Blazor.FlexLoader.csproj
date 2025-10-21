@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    
+    <!-- Package NuGet Properties -->
+    <PackageId>Blazor.FlexLoader</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>pwoagou</Authors>
+    <Company>pwoagou</Company>
+    <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom.</Description>
+    <PackageTags>blazor;loader;loading;spinner;component;ui</PackageTags>
+    <PackageProjectUrl>https://github.com/pwoagou/Blazor.FlexLoader</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/pwoagou/Blazor.FlexLoader</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Handlers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>
