@@ -7,37 +7,37 @@
 
 <div align="center">
   <img src="./assets/icon-github.svg" alt="Blazor.FlexLoader" width="128" height="128" />
-  <h3>?? Un composant Blazor flexible pour les indicateurs de chargement</h3>
+  <h3>Un composant Blazor flexible pour les indicateurs de chargement</h3>
 </div>
 
-[???? Français](#français) | [???? English](#english)
+[Francais](#francais) | [English](#english)
 
 ---
 
-## Français
+## Francais
 
-Un composant Blazor flexible et réutilisable pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom.
+Un composant Blazor flexible et reutilisable pour afficher des indicateurs de chargement avec support pour des images personnalisees, du texte et du contenu custom.
 
-### ?? Fonctionnalités
+### Fonctionnalites
 
-- ? Indicateur de chargement global pour les applications Blazor
-- ? Support d'images personnalisées (GIF, SVG, PNG, etc.)
-- ? Texte de chargement personnalisable
-- ? Contenu custom avec RenderFragment
-- ? Positionnement absolu ou fixe
-- ? Couleurs et styles personnalisables
-- ? Fermeture automatique configurable
-- ? Fermeture au clic sur l'overlay
-- ? Compatible .NET 9
-- ? CI/CD automatisé avec GitHub Actions
+- Indicateur de chargement global pour les applications Blazor
+- Support d'images personnalisees (GIF, SVG, PNG, etc.)
+- Texte de chargement personnalisable
+- Contenu custom avec RenderFragment
+- Positionnement absolu ou fixe
+- Couleurs et styles personnalisables
+- Fermeture automatique configurable
+- Fermeture au clic sur l'overlay
+- Compatible .NET 9
+- CI/CD automatise avec GitHub Actions
 
-### ?? Installation
+### Installation
 
 ```bash
 dotnet add package Blazor.FlexLoader
 ```
 
-### ??? Configuration
+### Configuration
 
 #### 1. Enregistrer le service dans `Program.cs`
 
@@ -60,9 +60,9 @@ builder.Services.AddBlazorFlexLoader();
 <FlexLoader />
 ```
 
-### ?? Utilisation
+### Utilisation
 
-#### Méthodes simples Show/Close
+#### Methodes simples Show/Close
 
 ```csharp
 @inject LoaderService LoaderService
@@ -86,7 +86,7 @@ builder.Services.AddBlazorFlexLoader();
 }
 ```
 
-#### Méthodes Increment/Decrement (gestion avancée)
+#### Methodes Increment/Decrement (gestion avancee)
 
 ```csharp
 LoaderService.Increment(); // Compter +1
@@ -94,33 +94,33 @@ LoaderService.Decrement(); // Compter -1
 LoaderService.Reset();     // Forcer fermeture
 ```
 
-### ?? Paramètres du composant
+### Parametres du composant
 
-| Paramètre | Type | Défaut | Description |
+| Parametre | Type | Defaut | Description |
 |-----------|------|--------|-------------|
 | `ImagePath` | `string?` | `null` | Chemin vers l'image de chargement |
-| `Text` | `string?` | `"Chargement..."` | Texte affiché pendant le chargement |
+| `Text` | `string?` | `"Chargement..."` | Texte affiche pendant le chargement |
 | `BackgroundColor` | `string` | `"rgba(255,255,255,0.75)"` | Couleur de fond de l'overlay |
 | `TextColor` | `string` | `"#333"` | Couleur du texte |
 | `ImageHeight` | `string?` | `"120px"` | Hauteur de l'image |
 | `UseAbsolutePosition` | `bool` | `true` | Position absolue ou fixe |
-| `CustomContent` | `RenderFragment?` | `null` | Contenu personnalisé |
-| `AutoClose` | `bool` | `true` | Fermeture automatique avec délai |
-| `AutoCloseDelay` | `int` | `300` | Délai avant fermeture (ms) |
+| `CustomContent` | `RenderFragment?` | `null` | Contenu personnalise |
+| `AutoClose` | `bool` | `true` | Fermeture automatique avec delai |
+| `AutoCloseDelay` | `int` | `300` | Delai avant fermeture (ms) |
 | `CloseOnOverlayClick` | `bool` | `false` | Fermer au clic sur l'overlay |
 
-### ?? API du LoaderService
+### API du LoaderService
 
 ```csharp
 public class LoaderService
 {
     public bool IsLoading { get; }
     
-    // Méthodes simples
+    // Methodes simples
     public void Show();       // Afficher
     public void Close();      // Masquer
     
-    // Méthodes avancées
+    // Methodes avancees
     public void Increment();  // Compter +1
     public void Decrement();  // Compter -1
     public void Reset();      // Forcer fermeture
@@ -129,7 +129,7 @@ public class LoaderService
 }
 ```
 
-### ?? Licence
+### Licence
 
 MIT
 
@@ -139,26 +139,26 @@ MIT
 
 A flexible and reusable Blazor component for displaying loading indicators with support for custom images, text, and custom content.
 
-### ?? Features
+### Features
 
-- ? Global loading indicator for Blazor applications
-- ? Support for custom images (GIF, SVG, PNG, etc.)
-- ? Customizable loading text
-- ? Custom content with RenderFragment
-- ? Absolute or fixed positioning
-- ? Customizable colors and styles
-- ? Configurable auto-close
-- ? Close on overlay click
-- ? Compatible with .NET 9
-- ? Automated CI/CD with GitHub Actions
+- Global loading indicator for Blazor applications
+- Support for custom images (GIF, SVG, PNG, etc.)
+- Customizable loading text
+- Custom content with RenderFragment
+- Absolute or fixed positioning
+- Customizable colors and styles
+- Configurable auto-close
+- Close on overlay click
+- Compatible with .NET 9
+- Automated CI/CD with GitHub Actions
 
-### ?? Installation
+### Installation
 
 ```bash
 dotnet add package Blazor.FlexLoader
 ```
 
-### ??? Setup
+### Setup
 
 #### 1. Register the service in `Program.cs`
 
@@ -181,7 +181,7 @@ builder.Services.AddBlazorFlexLoader();
 <FlexLoader />
 ```
 
-### ?? Usage
+### Usage
 
 #### Simple Show/Close methods
 
@@ -215,7 +215,7 @@ LoaderService.Decrement(); // Count -1
 LoaderService.Reset();     // Force close
 ```
 
-### ?? Component Parameters
+### Component Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -230,7 +230,7 @@ LoaderService.Reset();     // Force close
 | `AutoCloseDelay` | `int` | `300` | Delay before closing (ms) |
 | `CloseOnOverlayClick` | `bool` | `false` | Close on overlay click |
 
-### ?? LoaderService API
+### LoaderService API
 
 ```csharp
 public class LoaderService
@@ -250,6 +250,6 @@ public class LoaderService
 }
 ```
 
-### ?? License
+### License
 
 MIT
