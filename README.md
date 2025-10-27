@@ -21,6 +21,8 @@ Un composant Blazor flexible et reutilisable pour afficher des indicateurs de ch
 ### Fonctionnalites
 
 - **SVG anime par defaut** - Aucune configuration requise !
+- **Interception automatique HTTP** - Affiche le loader pendant les requetes HTTP
+- **Retry automatique** - Reessaie les requetes echouees jusqu'a 3 fois
 - Indicateur de chargement global pour les applications Blazor
 - Support d'images personnalisees (GIF, SVG, PNG, etc.)
 - Texte de chargement personnalisable
@@ -40,7 +42,9 @@ dotnet add package Blazor.FlexLoader
 
 ### Configuration
 
-#### 1. Enregistrer le service dans `Program.cs`
+#### Option 1: Configuration basique
+
+##### 1. Enregistrer le service dans `Program.cs`
 
 ```csharp
 using Blazor.FlexLoader.Extensions;
@@ -48,14 +52,14 @@ using Blazor.FlexLoader.Extensions;
 builder.Services.AddBlazorFlexLoader();
 ```
 
-#### 2. Ajouter les imports dans `_Imports.razor`
+##### 2. Ajouter les imports dans `_Imports.razor`
 
 ```razor
 @using Blazor.FlexLoader.Components
 @using Blazor.FlexLoader.Services
 ```
 
-#### 3. Ajouter le composant dans votre layout
+##### 3. Ajouter le composant dans votre layout
 
 ```razor
 <FlexLoader />
@@ -63,9 +67,63 @@ builder.Services.AddBlazorFlexLoader();
 
 **C'est tout ! Le loader affichera automatiquement un SVG anime professionnel.**
 
+#### Option 2: Configuration avec interception HTTP (Recommande)
+
+##### 1. Enregistrer les services avec interception HTTP dans `Program.cs`
+
+```csharp
+using Blazor.FlexLoader.Extensions;
+
+// Configure le loader avec interception automatique des requetes HTTP
+builder.Services.AddBlazorFlexLoaderWithHttpInterceptor(client =>
+{
+ client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+    // Autres configurations du HttpClient...
+});
+```
+
+##### 2. Ajouter les imports dans `_Imports.razor`
+
+```razor
+@using Blazor.FlexLoader.Components
+@using Blazor.FlexLoader.Services
+```
+
+##### 3. Ajouter le composant dans votre layout
+
+```razor
+<FlexLoader />
+```
+
+**Avantages:**
+- ? Le loader s'affiche automatiquement pendant **toutes** les requetes HTTP
+- ? Retry automatique (3 tentatives) en cas d'erreur HTTP 500 ou `HttpRequestException`
+- ? Pas besoin d'appeler manuellement `Show()` et `Close()`
+- ? Gestion centralisee des erreurs reseau
+
 ### Utilisation
 
-#### Methodes simples Show/Close
+#### Avec interception HTTP (Automatique)
+
+```csharp
+@inject IHttpClientFactory HttpClientFactory
+
+<button @onclick="FetchData">Charger les donnees</button>
+
+@code {
+    private async Task FetchData()
+    {
+        // Le loader s'affiche automatiquement !
+    var client = HttpClientFactory.CreateClient("BlazorFlexLoader");
+        var response = await client.GetAsync("/api/data");
+      
+   // Le loader se masque automatiquement a la fin
+        // Retry automatique en cas d'erreur !
+    }
+}
+```
+
+#### Methodes manuelles Show/Close
 
 ```csharp
 @inject LoaderService LoaderService
@@ -79,12 +137,12 @@ builder.Services.AddBlazorFlexLoader();
         
         try
         {
-            await SomeAsyncOperation();
+       await SomeAsyncOperation();
         }
-        finally
+     finally
         {
             LoaderService.Close(); // Masque le loader
-        }
+  }
     }
 }
 ```
@@ -149,6 +207,31 @@ public class LoaderService
 }
 ```
 
+### API des Extensions
+
+```csharp
+// Configuration basique
+services.AddBlazorFlexLoader();
+
+// Configuration avec interception HTTP + retry automatique
+services.AddBlazorFlexLoaderWithHttpInterceptor(client =>
+{
+    client.BaseAddress = new Uri("https://api.example.com");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+```
+
+### Fonctionnement de l'intercepteur HTTP
+
+L'`HttpCallInterceptorHandler` intercepte automatiquement toutes les requetes HTTP et:
+
+1. **Affiche le loader** au debut de chaque requete
+2. **Masque le loader** a la fin (succes ou echec)
+3. **Reessaie automatiquement** jusqu'a 3 fois en cas de:
+   - `HttpRequestException` (probleme reseau)
+   - Reponse HTTP 500 (erreur serveur)
+4. **Clone les requetes** pour permettre les retries multiples
+
 ### Licence
 
 MIT
@@ -162,6 +245,8 @@ A flexible and reusable Blazor component for displaying loading indicators with 
 ### Features
 
 - **Built-in animated SVG** - Zero configuration required!
+- **Automatic HTTP interception** - Shows loader during HTTP requests
+- **Automatic retry** - Retries failed requests up to 3 times
 - Global loading indicator for Blazor applications
 - Support for custom images (GIF, SVG, PNG, etc.)
 - Customizable loading text
@@ -181,7 +266,9 @@ dotnet add package Blazor.FlexLoader
 
 ### Setup
 
-#### 1. Register the service in `Program.cs`
+#### Option 1: Basic Setup
+
+##### 1. Register the service in `Program.cs`
 
 ```csharp
 using Blazor.FlexLoader.Extensions;
@@ -189,14 +276,14 @@ using Blazor.FlexLoader.Extensions;
 builder.Services.AddBlazorFlexLoader();
 ```
 
-#### 2. Add imports in `_Imports.razor`
+##### 2. Add imports in `_Imports.razor`
 
 ```razor
 @using Blazor.FlexLoader.Components
 @using Blazor.FlexLoader.Services
 ```
 
-#### 3. Add the component to your layout
+##### 3. Add the component to your layout
 
 ```razor
 <FlexLoader />
@@ -204,9 +291,63 @@ builder.Services.AddBlazorFlexLoader();
 
 **That's it! The loader will automatically display a professional animated SVG.**
 
+#### Option 2: Setup with HTTP Interception (Recommended)
+
+##### 1. Register services with HTTP interception in `Program.cs`
+
+```csharp
+using Blazor.FlexLoader.Extensions;
+
+// Configure the loader with automatic HTTP request interception
+builder.Services.AddBlazorFlexLoaderWithHttpInterceptor(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+    // Other HttpClient configurations...
+});
+```
+
+##### 2. Add imports in `_Imports.razor`
+
+```razor
+@using Blazor.FlexLoader.Components
+@using Blazor.FlexLoader.Services
+```
+
+##### 3. Add the component to your layout
+
+```razor
+<FlexLoader />
+```
+
+**Benefits:**
+- ? Loader displays automatically during **all** HTTP requests
+- ? Automatic retry (3 attempts) on HTTP 500 errors or `HttpRequestException`
+- ? No need to manually call `Show()` and `Close()`
+- ? Centralized network error handling
+
 ### Usage
 
-#### Simple Show/Close methods
+#### With HTTP Interception (Automatic)
+
+```csharp
+@inject IHttpClientFactory HttpClientFactory
+
+<button @onclick="FetchData">Load data</button>
+
+@code {
+    private async Task FetchData()
+    {
+        // Loader displays automatically!
+        var client = HttpClientFactory.CreateClient("BlazorFlexLoader");
+        var response = await client.GetAsync("/api/data");
+        
+        // Loader hides automatically when done
+        // Automatic retry on errors!
+    }
+}
+```
+
+#### Manual Show/Close methods
 
 ```csharp
 @inject LoaderService LoaderService
@@ -289,6 +430,31 @@ public class LoaderService
     public event EventHandler? OnChange;
 }
 ```
+
+### Extensions API
+
+```csharp
+// Basic configuration
+services.AddBlazorFlexLoader();
+
+// Configuration with HTTP interception + automatic retry
+services.AddBlazorFlexLoaderWithHttpInterceptor(client =>
+{
+    client.BaseAddress = new Uri("https://api.example.com");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+```
+
+### How HTTP Interceptor Works
+
+The `HttpCallInterceptorHandler` automatically intercepts all HTTP requests and:
+
+1. **Shows the loader** at the start of each request
+2. **Hides the loader** at the end (success or failure)
+3. **Automatically retries** up to 3 times on:
+   - `HttpRequestException` (network issues)
+   - HTTP 500 response (server error)
+4. **Clones requests** to allow multiple retries
 
 ### License
 
