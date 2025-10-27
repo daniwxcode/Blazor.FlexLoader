@@ -1,4 +1,6 @@
-﻿namespace Blazor.FlexLoader.Services;
+﻿using Blazor.FlexLoader.Models;
+
+namespace Blazor.FlexLoader.Services;
 
 /// <summary>
 /// Service de gestion d'indicateurs de chargement pour applications Blazor.
@@ -19,6 +21,8 @@ public class LoaderService
     public event EventHandler? OnChange;
     
     private int _requestCount;
+    private CancellationTokenSource? _globalCts;
+    private readonly LoaderMetrics _metrics = new();
 
     /// <summary>
     /// Indique si le loader est actuellement affiché.
@@ -34,6 +38,32 @@ public class LoaderService
     public bool IsLoading => _requestCount > 0;
 
     /// <summary>
+    /// Obtient les métriques en temps réel du loader.
+    /// </summary>
+    /// <remarks>
+    /// Gets the real-time loader metrics.
+    /// </remarks>
+    public LoaderMetrics Metrics => _metrics;
+
+    /// <summary>
+    /// Obtient le CancellationToken global pour annuler toutes les requêtes en cours.
+    /// </summary>
+    /// <remarks>
+    /// Gets the global CancellationToken to cancel all ongoing requests.
+    /// </remarks>
+    public CancellationToken GlobalCancellationToken
+ {
+        get
+        {
+         if (_globalCts == null || _globalCts.IsCancellationRequested)
+       {
+       _globalCts = new CancellationTokenSource();
+}
+   return _globalCts.Token;
+      }
+    }
+
+    /// <summary>
     /// Affiche le loader en incrémentant le compteur de requêtes.
     /// Méthode simplifiée équivalente à <see cref="Increment"/>.
     /// </summary>
@@ -42,7 +72,7 @@ public class LoaderService
     /// // Français
     /// LoaderService.Show();
     /// try 
-    /// {
+  /// {
     ///     await OperationAsync();
     /// }
     /// finally 
@@ -56,8 +86,8 @@ public class LoaderService
     /// Simplified method equivalent to <see cref="Increment"/>.
     /// </remarks>
     public void Show()
-    {
-        Increment();
+ {
+     Increment();
     }
 
     /// <summary>
@@ -65,7 +95,7 @@ public class LoaderService
     /// Méthode simplifiée équivalente à <see cref="Decrement"/>.
     /// Le loader ne se ferme que lorsque toutes les requêtes sont terminées (compteur = 0).
     /// </summary>
-    /// <remarks>
+  /// <remarks>
     /// Hides the loader by decrementing the request counter.
     /// Simplified method equivalent to <see cref="Decrement"/>.
     /// The loader only closes when all requests are finished (counter = 0).
@@ -95,46 +125,46 @@ public class LoaderService
     public void Increment()
     {
         Interlocked.Increment(ref _requestCount);
-        OnChange?.Invoke(this, EventArgs.Empty);
-    }
+      OnChange?.Invoke(this, EventArgs.Empty);
+ }
 
     /// <summary>
     /// Décrémente le compteur de requêtes de chargement de manière thread-safe.
     /// Le compteur ne peut pas descendre en dessous de 0.
     /// Déclenche l'événement <see cref="OnChange"/> pour notifier les composants du changement d'état.
-    /// </summary>
+ /// </summary>
     /// <remarks>
     /// Decrements the loading request counter in a thread-safe manner.
     /// The counter cannot go below 0.
     /// Triggers the <see cref="OnChange"/> event to notify components of state changes.
     /// </remarks>
     public void Decrement()
-    {
-        if (_requestCount > 0)
+  {
+      if (_requestCount > 0)
         {
             Interlocked.Decrement(ref _requestCount);
-            OnChange?.Invoke(this, EventArgs.Empty);
-        }
+         OnChange?.Invoke(this, EventArgs.Empty);
+  }
     }
 
-    /// <summary>
+/// <summary>
     /// Force la fermeture immédiate du loader en remettant le compteur à zéro.
     /// Utilise cette méthode en cas d'erreur critique ou pour réinitialiser l'état.
     /// ⚠️ Attention : Cette méthode ignore toutes les requêtes en cours.
     /// </summary>
     /// <example>
-    /// <code>
+  /// <code>
     /// // Français - En cas d'erreur critique
-    /// try 
+  /// try 
     /// {
     ///     await MultipleOperationsAsync();
     /// }
     /// catch (CriticalException ex)
-    /// {
+  /// {
     ///     LoaderService.Reset(); // Force la fermeture immédiate
     ///     // Gestion d'erreur...
     /// }
-    /// </code>
+  /// </code>
     /// </example>
     /// <remarks>
     /// Forces immediate closure of the loader by resetting the counter to zero.
@@ -143,7 +173,45 @@ public class LoaderService
     /// </remarks>
     public void Reset()
     {
-        Interlocked.Exchange(ref _requestCount, 0);
+  Interlocked.Exchange(ref _requestCount, 0);
         OnChange?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Annule toutes les requêtes en cours en créant un nouveau CancellationToken global.
+    /// Les requêtes qui observent le GlobalCancellationToken seront annulées.
+    /// </summary>
+    /// <remarks>
+    /// Cancels all ongoing requests by creating a new global CancellationToken.
+    /// Requests observing the GlobalCancellationToken will be cancelled.
+    /// </remarks>
+    public void CancelAllRequests()
+    {
+     _globalCts?.Cancel();
+_globalCts?.Dispose();
+        _globalCts = new CancellationTokenSource();
+    }
+
+    /// <summary>
+    /// Réinitialise les métriques du loader.
+    /// </summary>
+    /// <remarks>
+    /// Resets the loader metrics.
+  /// </remarks>
+    public void ResetMetrics()
+    {
+        _metrics.Reset();
+    }
+
+  /// <summary>
+    /// Obtient un résumé formaté des métriques.
+    /// </summary>
+    /// <returns>Chaîne formatée avec les statistiques.</returns>
+    /// <remarks>
+    /// Gets a formatted summary of the metrics.
+    /// </remarks>
+    public string GetMetricsSummary()
+    {
+     return _metrics.GetSummary();
     }
 }

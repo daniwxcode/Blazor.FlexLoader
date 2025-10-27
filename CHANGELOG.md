@@ -5,6 +5,126 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-01-XX
+
+### ?? Added - Metrics and Global Cancellation
+
+- **?? Real-time metrics system** with `LoaderMetrics`
+  - `TotalRequests`, `SuccessfulRequests`, `FailedRequests` counters
+  - `RetriedRequests`, `TotalRetryAttempts` retry statistics
+  - `AverageResponseTime`, `MaxResponseTime`, `MinResponseTime` performance metrics
+  - `StatusCodeDistribution` for HTTP code analysis
+  - `SuccessRate`, `FailureRate`, `RetryRate` percentages
+  - `LastRequestTime` timestamp tracking
+
+- **?? Global CancellationToken support**
+  - `GlobalCancellationToken` property on `LoaderService`
+ - `CancelAllRequests()` method to cancel all ongoing requests
+  - Automatic integration with HTTP handler
+  - Support for manual usage in custom code
+
+- **??? New LoaderService methods**
+  - `ResetMetrics()` - Reset all metrics to zero
+  - `GetMetricsSummary()` - Get formatted metrics summary
+
+### ?? Documentation
+
+- New `docs/METRICS_AND_CANCELLATION.md` - Complete guide with examples
+- New `docs/UPGRADE_GUIDE_V1.6.md` - Migration guide from v1.5.0
+- New `Examples/MetricsAndCancellationExamples.cs` - 9 usage examples
+- Updated README with metrics and cancellation features
+
+### ?? Technical
+
+- Created `Models/LoaderMetrics.cs` class
+- Thread-safe metrics collection with `ConcurrentDictionary` and `ConcurrentQueue`
+- Automatic metrics recording in `HttpCallInterceptorHandler`
+- Linked cancellation tokens for global cancellation support
+
+### ? Backward Compatibility
+
+- 100% compatible with v1.5.0
+- No configuration changes required
+- Metrics automatically enabled and collected
+- Existing code continues to work without modification
+
+## [1.5.0] - 2025-01-XX
+
+### ?? Added - Advanced HTTP Interceptor Configuration
+
+- **?? Advanced retry configuration** with `HttpInterceptorOptions`
+  - `MaxRetryAttempts` : Configurable number of attempts (default: 3)
+  - `RetryDelay` : Configurable delay between attempts (default: 1s)
+  - `UseExponentialBackoff` : Exponential backoff support (default: true)
+  - `RetryOnStatusCodes` : Customizable HTTP codes triggering retry
+  - `RetryOnTimeout` : Option to retry on timeout
+
+- **?? Conditional request filtering**
+  - `InterceptPredicate` : Filter requests to intercept (e.g., only `/api/*`)
+  - `ShowLoaderPredicate` : Filter loader display (e.g., only POST/PUT/DELETE)
+
+- **?? Integrated logging with ILogger**
+  - Automatic HTTP request logs (start, end, duration, status code)
+  - Retry attempt logs
+  - Error logs after all attempts exhausted
+  - Detailed logging support with `EnableDetailedLogging`
+
+- **?? Customizable callbacks**
+  - `OnRetry` : Callback invoked before each retry attempt
+  - Enables notifications, custom logging, etc.
+
+- **?? Complete documentation**
+  - New `docs/ADVANCED_CONFIGURATION.md` file with detailed examples
+  - Updated README with all new options
+  - Practical examples for each feature
+
+### ?? Enhanced
+
+- **?? Smarter retry logic**
+  - Exponential backoff by default (1s, 2s, 4s, 8s...)
+  - Support for multiple HTTP error codes (500, 502, 503, 504, 408)
+  - Timeout handling with automatic retry
+
+- **? Performance**
+  - Conditional logging to avoid overhead in production
+  - Request filtering to reduce performance impact
+
+- **?? Backward compatibility**
+  - All existing methods continue to work
+  - Default options match previous behavior
+  - Transparent migration without breaking changes
+
+### ?? Technical
+
+- Created `HttpInterceptorOptions` class for configuration
+- Refactored `HttpCallInterceptorHandler` to support options
+- Added overloads in `ServiceCollectionExtensions`
+- Support for `ILogger<HttpCallInterceptorHandler>` injection
+
+### ?? Examples
+
+```csharp
+// Basic upgrade - no changes required
+builder.Services.AddBlazorFlexLoaderWithHttpInterceptor(client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+});
+
+// New advanced configuration
+builder.Services.AddBlazorFlexLoaderWithHttpInterceptor(
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+    },
+    options =>
+    {
+ options.MaxRetryAttempts = 5;
+        options.UseExponentialBackoff = true;
+        options.InterceptPredicate = request => 
+          request.RequestUri?.AbsolutePath.StartsWith("/api/") ?? false;
+    });
+```
+
 ## [1.4.0] - 2024-10-21
 
 ### ?? Added - Built-in Animated SVG Loader
@@ -13,7 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ?? **Smooth CSS animations** with rotating rings and pulsing dots
 - ?? **Zero configuration required** - just add `<FlexLoader />`
 - ?? **Optimized 80x80px size** for perfect visibility
-- ?? **Maintains full customization** options for advanced users
+- ??? **Maintains full customization** options for advanced users
 
 ### Enhanced
 - ?? **DefaultLoaderStyle** property for SVG styling
@@ -114,6 +234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ?? **Event-driven** state management
 - ?? **Comprehensive examples** and documentation
 
+[1.6.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.5.0...v1.6.0
+[1.5.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.3.4...v1.4.0
 [1.3.4]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.3.3...v1.3.4
 [1.3.3]: https://github.com/daniwxcode/Blazor.FlexLoader/compare/v1.2.0...v1.3.3
