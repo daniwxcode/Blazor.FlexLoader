@@ -4,6 +4,14 @@ on:
  push:
  branches:
  - main
+ paths:
+ - 'Blazor.FlexLoader.csproj'
+ - '**/*.cs'
+ - '**/*.razor'
+ - '**/*.csproj'
+ - '!docs/**'
+ - '!assets/**'
+ - '!.github/**'
 
 env:
  DOTNET_VERSION: '9.0.x'
@@ -38,7 +46,7 @@ jobs:
  run: |
  if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
  echo "NUGET_API_KEY secret is not set. Configure it in repository Settings > Secrets and variables > Actions."
- exit1
+ exit 1
  fi
 
  - name: Restore
