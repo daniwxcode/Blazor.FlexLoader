@@ -1,19 +1,9 @@
 name: Publish to NuGet
 
 on:
- workflow_dispatch:
- inputs:
- version:
- description: 'Package version (e.g.1.6.1). Overrides csproj version.'
- required: false
- type: string
- release:
- types: [published]
  push:
  branches:
  - main
- tags:
- - 'v*'
 
 env:
  DOTNET_VERSION: '9.0.x'
@@ -26,8 +16,6 @@ jobs:
  runs-on: ubuntu-latest
  permissions:
  contents: read
- if: github.event_name != 'pull_request'
-
  steps:
  - name: Checkout
  uses: actions/checkout@v4
@@ -50,27 +38,8 @@ jobs:
  run: |
  if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
  echo "NUGET_API_KEY secret is not set. Configure it in repository Settings > Secrets and variables > Actions."
- exit 1
+ exit1
  fi
-
- - name: Determine package version
- id: version
- shell: bash
- run: |
- # Priority: workflow_dispatch input > release tag > push tag > csproj
- if [ -n "${{ github.event.inputs.version }}" ]; then
- V="${{ github.event.inputs.version }}"
- elif [ "${{ github.event_name }}" = "release" ]; then
- T="${{ github.event.release.tag_name }}"
- V="${T#v}"
- elif [[ "${GITHUB_REF_TYPE}" = "tag" ]]; then
- T="${GITHUB_REF_NAME}"
- V="${T#v}"
- else
- V=""
- fi
- echo "PACKAGE_VERSION=$V" >> $GITHUB_ENV
- echo "Resolved version: ${V:-'(from csproj)'}"
 
  - name: Restore
  run: dotnet restore ${{ env.PROJECT_PATH }}
@@ -79,17 +48,7 @@ jobs:
  run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
 
  - name: Pack
- shell: bash
- run: |
- if [ -n "${PACKAGE_VERSION}" ]; then
- dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./artifacts \
- /p:PackageVersion=${PACKAGE_VERSION} \
- /p:ContinuousIntegrationBuild=true
- else
- dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./artifacts \
- /p:ContinuousIntegrationBuild=true
- fi
- ls -la ./artifacts
+ run: dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./artifacts /p:ContinuousIntegrationBuild=true
 
  - name: Publish .nupkg to NuGet.org
  run: |
