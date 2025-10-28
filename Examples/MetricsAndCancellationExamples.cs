@@ -1,10 +1,11 @@
 using Blazor.FlexLoader.Services;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazor.FlexLoader.Examples;
 
 /// <summary>
-/// Exemples d'utilisation des métriques et du CancellationToken global.
+/// Exemples d'utilisation des mÃ©triques et du CancellationToken global.
 /// </summary>
 /// <remarks>
 /// Usage examples for metrics and global CancellationToken.
@@ -12,36 +13,36 @@ namespace Blazor.FlexLoader.Examples;
 public static class MetricsAndCancellationExamples
 {
     /// <summary>
-    /// Exemple 1 : Affichage des métriques en temps réel.
+    /// Exemple 1 : Affichage des mÃ©triques en temps rÃ©el.
     /// </summary>
     public static void DisplayMetricsExample(LoaderService loaderService)
     {
-  // Obtenir les métriques
-    var metrics = loaderService.Metrics;
+        // Obtenir les mÃ©triques
+        var metrics = loaderService.Metrics;
 
         Console.WriteLine($"Total Requests: {metrics.TotalRequests}");
         Console.WriteLine($"Success Rate: {metrics.SuccessRate:F2}%");
         Console.WriteLine($"Failure Rate: {metrics.FailureRate:F2}%");
-     Console.WriteLine($"Retry Rate: {metrics.RetryRate:F2}%");
-   Console.WriteLine($"Average Response Time: {metrics.AverageResponseTime.TotalMilliseconds:F2}ms");
+        Console.WriteLine($"Retry Rate: {metrics.RetryRate:F2}%");
+        Console.WriteLine($"Average Response Time: {metrics.AverageResponseTime.TotalMilliseconds:F2}ms");
         Console.WriteLine($"Max Response Time: {metrics.MaxResponseTime.TotalMilliseconds:F2}ms");
-        
-  // Ou utiliser le résumé formaté
+
+        // Ou utiliser le rÃ©sumÃ© formatÃ©
         Console.WriteLine(loaderService.GetMetricsSummary());
     }
 
     /// <summary>
-    /// Exemple 2 : Surveillance des métriques en temps réel dans une application Blazor.
+    /// Exemple 2 : Surveillance des mÃ©triques en temps rÃ©el dans une application Blazor.
     /// </summary>
     public static class MetricsMonitorComponent
     {
-    public static string GetMetricsMarkup(LoaderService loaderService)
-     {
- var metrics = loaderService.Metrics;
-        
-  return $@"
+        public static string GetMetricsMarkup(LoaderService loaderService)
+        {
+            var metrics = loaderService.Metrics;
+
+            return $@"
 <div class=""metrics-panel"">
-    <h3>?? Performance Metrics</h3>
+    <h3>ðŸ“Š Performance Metrics</h3>
     
     <div class=""metric-card"">
       <div class=""metric-title"">Total Requests</div>
@@ -122,22 +123,22 @@ public static class MetricsAndCancellationExamples
     }}
 </style>
 ";
-    }
+        }
     }
 
     /// <summary>
-    /// Exemple 3 : Réinitialisation des métriques.
+    /// Exemple 3 : RÃ©initialisation des mÃ©triques.
     /// </summary>
     public static void ResetMetricsExample(LoaderService loaderService)
     {
-        // Afficher les métriques actuelles
-   Console.WriteLine("Before reset:");
-   Console.WriteLine(loaderService.GetMetricsSummary());
-        
-        // Réinitialiser
+        // Afficher les mÃ©triques actuelles
+        Console.WriteLine("Before reset:");
+        Console.WriteLine(loaderService.GetMetricsSummary());
+
+        // RÃ©initialiser
         loaderService.ResetMetrics();
-        
- // Vérifier
+
+        // VÃ©rifier
         Console.WriteLine("\nAfter reset:");
         Console.WriteLine(loaderService.GetMetricsSummary());
     }
@@ -148,144 +149,144 @@ public static class MetricsAndCancellationExamples
     public static void AnalyzeStatusCodesExample(LoaderService loaderService)
     {
         var distribution = loaderService.Metrics.StatusCodeDistribution;
-        
+
         Console.WriteLine("HTTP Status Code Distribution:");
         foreach (var (statusCode, count) in distribution.OrderByDescending(x => x.Value))
         {
-   var percentage = loaderService.Metrics.TotalRequests > 0 
-              ? (double)count / loaderService.Metrics.TotalRequests * 100 
-     : 0;
-         
-      Console.WriteLine($"  {statusCode}: {count} ({percentage:F1}%)");
+            var percentage = loaderService.Metrics.TotalRequests > 0
+                       ? (double)count / loaderService.Metrics.TotalRequests * 100
+              : 0;
+
+            Console.WriteLine($"  {statusCode}: {count} ({percentage:F1}%)");
         }
     }
 
     /// <summary>
-    /// Exemple 5 : Annulation de toutes les requêtes en cours.
+    /// Exemple 5 : Annulation de toutes les requÃªtes en cours.
     /// </summary>
     public static async Task CancelAllRequestsExample(LoaderService loaderService, IHttpClientFactory httpClientFactory)
     {
-    var client = httpClientFactory.CreateClient("BlazorFlexLoader");
-     
-        // Démarrer plusieurs requêtes
+        var client = httpClientFactory.CreateClient("BlazorFlexLoader");
+
+        // DÃ©marrer plusieurs requÃªtes
         var tasks = new List<Task>();
         for (int i = 0; i < 5; i++)
         {
             tasks.Add(Task.Run(async () =>
             {
-  try
-      {
-         // Les requêtes utiliseront le GlobalCancellationToken
-          await client.GetAsync($"/api/data/{i}");
- }
-      catch (OperationCanceledException)
-     {
-             Console.WriteLine($"Request {i} was cancelled");
-     }
+                try
+                {
+                    // Les requÃªtes utiliseront le GlobalCancellationToken
+                    await client.GetAsync($"/api/data/{i}");
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine($"Request {i} was cancelled");
+                }
             }));
-}
-        
+        }
+
         // Attendre un peu
         await Task.Delay(100);
-        
-        // Annuler toutes les requêtes
+
+        // Annuler toutes les requÃªtes
         loaderService.CancelAllRequests();
-        
- // Attendre que toutes les tâches se terminent
-   await Task.WhenAll(tasks);
-        
+
+        // Attendre que toutes les tÃ¢ches se terminent
+        await Task.WhenAll(tasks);
+
         Console.WriteLine("All requests cancelled");
     }
 
     /// <summary>
-    /// Exemple 6 : Utilisation du CancellationToken global dans une requête manuelle.
+    /// Exemple 6 : Utilisation du CancellationToken global dans une requÃªte manuelle.
     /// </summary>
     public static async Task ManualRequestWithGlobalCancellationExample(
-        LoaderService loaderService, 
+        LoaderService loaderService,
         HttpClient httpClient)
     {
-  try
+        try
         {
-        loaderService.Show();
-    
-        // Utiliser le GlobalCancellationToken
-         var response = await httpClient.GetAsync(
-   "/api/data", 
-   loaderService.GlobalCancellationToken);
-       
-     Console.WriteLine($"Response: {response.StatusCode}");
+            loaderService.Show();
+
+            // Utiliser le GlobalCancellationToken
+            var response = await httpClient.GetAsync(
+      "/api/data",
+      loaderService.GlobalCancellationToken);
+
+            Console.WriteLine($"Response: {response.StatusCode}");
         }
         catch (OperationCanceledException)
-   {
+        {
             Console.WriteLine("Request was cancelled globally");
-  }
+        }
         finally
-      {
-   loaderService.Close();
-   }
+        {
+            loaderService.Close();
+        }
     }
 
     /// <summary>
-    /// Exemple 7 : Surveillance continue des métriques avec alertes.
-/// </summary>
+    /// Exemple 7 : Surveillance continue des mÃ©triques avec alertes.
+    /// </summary>
     public static async Task MonitorMetricsWithAlertsExample(LoaderService loaderService)
     {
         while (true)
         {
-    var metrics = loaderService.Metrics;
-   
-            // Alerte si taux d'échec > 20%
- if (metrics.FailureRate > 20 && metrics.TotalRequests >= 10)
-     {
+            var metrics = loaderService.Metrics;
+
+            // Alerte si taux d'Ã©chec > 20%
+            if (metrics.FailureRate > 20 && metrics.TotalRequests >= 10)
+            {
                 Console.WriteLine($"?? WARNING: High failure rate detected: {metrics.FailureRate:F1}%");
             }
-    
-         // Alerte si temps de réponse moyen > 5s
+
+            // Alerte si temps de rÃ©ponse moyen > 5s
             if (metrics.AverageResponseTime.TotalSeconds > 5)
- {
-    Console.WriteLine($"?? WARNING: Slow response time: {metrics.AverageResponseTime.TotalSeconds:F1}s");
-            }
- 
-            // Alerte si trop de retries
-       if (metrics.RetryRate > 50 && metrics.TotalRequests >= 10)
             {
-           Console.WriteLine($"?? WARNING: High retry rate: {metrics.RetryRate:F1}%");
-      }
-            
-       await Task.Delay(TimeSpan.FromSeconds(10));
-   }
+                Console.WriteLine($"?? WARNING: Slow response time: {metrics.AverageResponseTime.TotalSeconds:F1}s");
+            }
+
+            // Alerte si trop de retries
+            if (metrics.RetryRate > 50 && metrics.TotalRequests >= 10)
+            {
+                Console.WriteLine($"?? WARNING: High retry rate: {metrics.RetryRate:F1}%");
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(10));
+        }
     }
 
     /// <summary>
-    /// Exemple 8 : Export des métriques pour monitoring externe.
+    /// Exemple 8 : Export des mÃ©triques pour monitoring externe.
     /// </summary>
-    public static Dictionary<string, object> ExportMetricsForMonitoring(LoaderService loaderService)
+    public static Dictionary<string, object?> ExportMetricsForMonitoring(LoaderService loaderService)
     {
-   var metrics = loaderService.Metrics;
-        
-        return new Dictionary<string, object>
+        var metrics = loaderService.Metrics;
+
+        return new Dictionary<string, object?>
         {
-     ["timestamp"] = DateTime.UtcNow,
+            ["timestamp"] = DateTime.UtcNow,
             ["total_requests"] = metrics.TotalRequests,
-    ["successful_requests"] = metrics.SuccessfulRequests,
-      ["failed_requests"] = metrics.FailedRequests,
-  ["retried_requests"] = metrics.RetriedRequests,
-        ["total_retry_attempts"] = metrics.TotalRetryAttempts,
-        ["success_rate"] = metrics.SuccessRate,
-    ["failure_rate"] = metrics.FailureRate,
-     ["retry_rate"] = metrics.RetryRate,
-         ["avg_response_time_ms"] = metrics.AverageResponseTime.TotalMilliseconds,
+            ["successful_requests"] = metrics.SuccessfulRequests,
+            ["failed_requests"] = metrics.FailedRequests,
+            ["retried_requests"] = metrics.RetriedRequests,
+            ["total_retry_attempts"] = metrics.TotalRetryAttempts,
+            ["success_rate"] = metrics.SuccessRate,
+            ["failure_rate"] = metrics.FailureRate,
+            ["retry_rate"] = metrics.RetryRate,
+            ["avg_response_time_ms"] = metrics.AverageResponseTime.TotalMilliseconds,
             ["max_response_time_ms"] = metrics.MaxResponseTime.TotalMilliseconds,
-            ["min_response_time_ms"] = metrics.MinResponseTime == TimeSpan.MaxValue 
-                ? 0 
+            ["min_response_time_ms"] = metrics.MinResponseTime == TimeSpan.MaxValue
+                ? 0
       : metrics.MinResponseTime.TotalMilliseconds,
-          ["last_request_time"] = metrics.LastRequestTime,
-  ["status_code_distribution"] = metrics.StatusCodeDistribution
+            ["last_request_time"] = metrics.LastRequestTime,
+            ["status_code_distribution"] = metrics.StatusCodeDistribution
         };
-  }
+    }
 
     /// <summary>
-    /// Exemple 9 : Composant Blazor complet avec métriques et annulation.
+    /// Exemple 9 : Composant Blazor complet avec mÃ©triques et annulation.
     /// </summary>
     public static string GetFullBlazorComponentExample()
     {
@@ -330,7 +331,7 @@ public static class MetricsAndCancellationExamples
 
     protected override void OnInitialized()
     {
-     // Rafraîchir toutes les 5 secondes
+     // RafraÃ®chir toutes les 5 secondes
    _timer = new System.Timers.Timer(5000);
         _timer.Elapsed += async (sender, e) => await InvokeAsync(StateHasChanged);
         _timer.Start();
@@ -342,7 +343,7 @@ LoaderService.ResetMetrics();
     }
 
 private void CancelAllRequests()
-    {
+{
   LoaderService.CancelAllRequests();
     }
 
