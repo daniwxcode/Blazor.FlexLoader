@@ -7,11 +7,11 @@
     
     <!-- Package NuGet Properties -->
     <PackageId>Blazor.FlexLoader</PackageId>
-    <Version>1.4.0</Version>
+    <Version>1.6.0</Version>
     <Authors>daniwxcode</Authors>
     <Company>daniwxcode</Company>
-    <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom. | A flexible Blazor component for displaying loading indicators with support for custom images, text and custom content.</Description>
-    <PackageTags>blazor;loader;loading;spinner;component;ui;dotnet9;french;english;bilingual;github-actions;svg;animated</PackageTags>
+    <Description>Un composant Blazor flexible pour afficher des indicateurs de chargement avec support pour des images personnalisées, du texte et du contenu custom. Inclut interception HTTP automatique avec retry intelligent, exponential backoff, métriques en temps réel et annulation globale. | A flexible Blazor component for displaying loading indicators with support for custom images, text and custom content. Includes automatic HTTP interception with smart retry, exponential backoff, real-time metrics and global cancellation.</Description>
+    <PackageTags>blazor;loader;loading;spinner;component;ui;dotnet9;french;english;bilingual;github-actions;svg;animated;http;interceptor;retry;exponential-backoff;logging;resilience;metrics;monitoring;cancellation;performance</PackageTags>
     <PackageProjectUrl>https://github.com/daniwxcode/Blazor.FlexLoader</PackageProjectUrl>
     <RepositoryUrl>https://github.com/daniwxcode/Blazor.FlexLoader</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -21,7 +21,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageReleaseNotes>v1.4.0: Built-in animated SVG loader | Loader SVG anime integre - Default animated SVG loader when no image specified - Professional Blazor-themed design with smooth animations - Zero configuration required for beautiful loading experience - Maintains full customization options</PackageReleaseNotes>
+    <PackageReleaseNotes>v1.6.0: Real-time Metrics and Global Cancellation | Métriques en temps réel et Annulation globale - Real-time performance metrics (requests, success/failure rates, response times) - Global CancellationToken for cancelling all ongoing requests - HTTP status code distribution tracking - Automatic metrics collection with zero configuration - Full backward compatibility with v1.5.0</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +39,12 @@
     <None Include="docs\LoaderService-Documentation.md" Pack="true" PackagePath="docs\" />
     <None Include="docs\GitHub-Actions-Setup.md" Pack="true" PackagePath="docs\" />
     <None Include="docs\Default-SVG-Loader-Example.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\ADVANCED_CONFIGURATION.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\UPGRADE_GUIDE.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\UPGRADE_GUIDE_V1.6.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\METRICS_AND_CANCELLATION.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\README.md" Pack="true" PackagePath="docs\" />
+    <None Include="docs\SUMMARY.md" Pack="true" PackagePath="docs\" />
     <None Include="CHANGELOG.md" Pack="true" PackagePath="\" />
     <!-- Assets documentation included -->
     <None Include="assets\README.md" Pack="true" PackagePath="assets\" />
