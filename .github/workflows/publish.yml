@@ -10,6 +10,8 @@ on:
  release:
  types: [published]
  push:
+ branches:
+ - main
  tags:
  - 'v*'
 
@@ -24,6 +26,7 @@ jobs:
  runs-on: ubuntu-latest
  permissions:
  contents: read
+ if: github.event_name != 'pull_request'
 
  steps:
  - name: Checkout
@@ -41,6 +44,14 @@ jobs:
  key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
  restore-keys: |
  ${{ runner.os }}-nuget-
+
+ - name: Verify NuGet API key is set
+ shell: bash
+ run: |
+ if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
+ echo "NUGET_API_KEY secret is not set. Configure it in repository Settings > Secrets and variables > Actions."
+ exit 1
+ fi
 
  - name: Determine package version
  id: version
