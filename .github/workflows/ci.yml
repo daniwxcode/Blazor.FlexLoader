@@ -58,7 +58,7 @@ jobs:
  with:
  name: nuget-packages
  path: ./test-packages/*.nupkg
- retention-days:7
+ retention-days: 7
 
  code-quality:
  name: Code Quality
