@@ -1,122 +1,108 @@
-name: CI
+﻿name: CI
 
 on:
- push:
- branches: [ main, develop ]
- pull_request:
- branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 env:
- DOTNET_VERSION: '9.0.x'
- PROJECT_PATH: ./Blazor.FlexLoader.csproj
+  DOTNET_VERSION: '9.0.x'
+  PROJECT_PATH: ./Blazor.FlexLoader.csproj
 
 jobs:
- ci:
- name: Build & Validate
- runs-on: ubuntu-latest
- steps:
- - name: Checkout repository
- uses: actions/checkout@v4
+  build-validate:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
- - name: Setup .NET
- uses: actions/setup-dotnet@v4
- with:
- dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
- - name: Restore dependencies
- run: dotnet restore ${{ env.PROJECT_PATH }}
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
- - name: Build project
- run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
- - name: Run tests (if any)
- shell: bash
- run: |
- if find . -type f -name "*Tests.csproj" | grep -q .; then
- dotnet test --configuration Release --no-build --verbosity normal
- else
- echo "No test projects found"
- fi
+      - name: Build project
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
 
- - name: Create test package
- run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./test-packages
+      - name: Run tests (if any)
+        shell: bash
+        run: |
+          if find . -type f -name "*Tests.csproj" | grep -q .; then
+            dotnet test --configuration Release --no-build --verbosity normal
+          else
+            echo "No test projects found"
+          fi
 
- - name: Validate package
- shell: bash
- run: |
- echo "Generated packages:"
- ls -la ./test-packages/ || true
- if compgen -G "./test-packages/*.nupkg" > /dev/null; then
- echo "Package created successfully"
- else
- echo "Failed to create package"
- exit 1
- fi
+      - name: Create test package
+        run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./test-packages
 
- - name: Upload package artifacts
- uses: actions/upload-artifact@v4
- with:
- name: nuget-packages
- path: ./test-packages/*.nupkg
- retention-days: 7
+      - name: Validate package
+        shell: bash
+        run: |
+          echo "Generated packages:"
+          ls -la ./test-packages/ || true
+          if compgen -G "./test-packages/*.nupkg" > /dev/null; then
+            echo "✅ Package created successfully"
+          else
+            echo "❌ Failed to create package"
+            exit 1
+          fi
 
- code-quality:
- name: Code Quality
- runs-on: ubuntu-latest
- steps:
- - name: Checkout repository
- uses: actions/checkout@v4
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: ./test-packages/*.nupkg
+          retention-days: 7
 
- - name: Setup .NET
- uses: actions/setup-dotnet@v4
- with:
- dotnet-version: ${{ env.DOTNET_VERSION }}
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
- - name: Restore dependencies
- run: dotnet restore ${{ env.PROJECT_PATH }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
- - name: Analyze code (treat warnings as errors)
- run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --verbosity normal /p:TreatWarningsAsErrors=true
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
- documentation:
- name: Documentation Check
- runs-on: ubuntu-latest
- steps:
- - name: Checkout repository
- uses: actions/checkout@v4
+      - name: Check code format
+        run: dotnet format --verify-no-changes || echo "Code formatting issues detected"
 
- - name: Check README
- shell: bash
- run: |
- if [ ! -f "README.md" ]; then
- echo "README.md is missing"
- exit 1
- fi
- echo "README.md present"
+      - name: Analyze code (warnings as errors)
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release /p:TreatWarningsAsErrors=true
 
- - name: Check CHANGELOG
- shell: bash
- run: |
- if [ ! -f "CHANGELOG.md" ]; then
- echo "CHANGELOG.md is missing"
- exit 1
- fi
- echo "CHANGELOG.md present"
+  documentation:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
- - name: Check Documentation
- shell: bash
- run: |
- if [ ! -f "docs/LoaderService-Documentation.md" ]; then
- echo "Detailed documentation is missing"
- exit 1
- fi
- echo "Documentation present"
-
- - name: Check License
- shell: bash
- run: |
- if [ ! -f "LICENSE" ]; then
- echo "LICENSE is missing"
- exit 1
- fi
- echo "LICENSE present"
+      - name: Check mandatory documentation files
+        shell: bash
+        run: |
+          for f in README.md CHANGELOG.md LICENSE docs/LoaderService-Documentation.md; do
+            if [ ! -f "$f" ]; then
+              echo "❌ Missing file: $f"
+              exit 1
+            fi
+            echo "✅ $f present"
+          done
