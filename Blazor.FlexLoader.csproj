@@ -56,5 +56,8 @@
     <Compile Remove=".github\**" />
     <EmbeddedResource Remove=".github\**" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".github\workflows\publish.yml" />
+  </ItemGroup>
 
 </Project>

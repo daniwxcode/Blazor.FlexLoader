@@ -1,0 +1,102 @@
+name: Publish to NuGet
+
+on:
+ workflow_dispatch:
+ inputs:
+ version:
+ description: 'Package version (e.g.1.6.1). Overrides csproj version.'
+ required: false
+ type: string
+ release:
+ types: [published]
+ push:
+ tags:
+ - 'v*'
+
+env:
+ DOTNET_VERSION: '9.0.x'
+ PROJECT_PATH: ./Blazor.FlexLoader.csproj
+ NUGET_SOURCE: https://api.nuget.org/v3/index.json
+
+jobs:
+ publish:
+ name: Build & Publish
+ runs-on: ubuntu-latest
+ permissions:
+ contents: read
+
+ steps:
+ - name: Checkout
+ uses: actions/checkout@v4
+
+ - name: Setup .NET
+ uses: actions/setup-dotnet@v4
+ with:
+ dotnet-version: ${{ env.DOTNET_VERSION }}
+
+ - name: Cache NuGet packages
+ uses: actions/cache@v4
+ with:
+ path: ~/.nuget/packages
+ key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+ restore-keys: |
+ ${{ runner.os }}-nuget-
+
+ - name: Determine package version
+ id: version
+ shell: bash
+ run: |
+ # Priority: workflow_dispatch input > release tag > push tag > csproj
+ if [ -n "${{ github.event.inputs.version }}" ]; then
+ V="${{ github.event.inputs.version }}"
+ elif [ "${{ github.event_name }}" = "release" ]; then
+ T="${{ github.event.release.tag_name }}"
+ V="${T#v}"
+ elif [[ "${GITHUB_REF_TYPE}" = "tag" ]]; then
+ T="${GITHUB_REF_NAME}"
+ V="${T#v}"
+ else
+ V=""
+ fi
+ echo "PACKAGE_VERSION=$V" >> $GITHUB_ENV
+ echo "Resolved version: ${V:-'(from csproj)'}"
+
+ - name: Restore
+ run: dotnet restore ${{ env.PROJECT_PATH }}
+
+ - name: Build
+ run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
+
+ - name: Pack
+ shell: bash
+ run: |
+ if [ -n "${PACKAGE_VERSION}" ]; then
+ dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./artifacts \
+ /p:PackageVersion=${PACKAGE_VERSION} \
+ /p:ContinuousIntegrationBuild=true
+ else
+ dotnet pack ${{ env.PROJECT_PATH }} -c Release -o ./artifacts \
+ /p:ContinuousIntegrationBuild=true
+ fi
+ ls -la ./artifacts
+
+ - name: Publish .nupkg to NuGet.org
+ run: |
+ dotnet nuget push "./artifacts/*.nupkg" \
+ --api-key "${{ secrets.NUGET_API_KEY }}" \
+ --source "${{ env.NUGET_SOURCE }}" \
+ --skip-duplicate
+
+ - name: Publish .snupkg to NuGet.org (symbols)
+ run: |
+ dotnet nuget push "./artifacts/*.snupkg" \
+ --api-key "${{ secrets.NUGET_API_KEY }}" \
+ --source "${{ env.NUGET_SOURCE }}" \
+ --skip-duplicate || true
+
+ - name: Upload artifacts
+ uses: actions/upload-artifact@v4
+ with:
+ name: nuget-published-artifacts
+ path: ./artifacts/*
+ retention-days:7
