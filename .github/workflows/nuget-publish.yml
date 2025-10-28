@@ -47,7 +47,94 @@ jobs:
         if [ -d "tests" ] || [ -d "test" ] || [ -d "Tests" ]; then
           dotnet test --configuration Release --no-build --verbosity normal
         else
-          echo "?? No test projects found"
+          echo " No test projects found"
+        fi
+
+  publish-nuget:
+    name:  Publish to NuGet
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name:  Checkout repository
+      uses: actions/checkout@v4
+    
+    - name:  Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name:  Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+    
+    - name:  Build project
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+    
+    - name:  Create NuGet package
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+    
+    - name:  Publish to NuGet.org
+      run: |
+        dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg" \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    
+    - name:  Extract version from tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name:  Create GitHub Release
+      uses: softpname:  Build and Publish NuGet Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Déclenche sur les tags de version (ex: v1.2.0)
+  workflow_dispatch:  # Permet l'exécution manuelle
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  PROJECT_PATH: './Blazor.FlexLoader.csproj'
+  PACKAGE_OUTPUT_DIRECTORY: './bin/Release'
+
+# Permissions nécessaires pour créer des releases
+permissions:
+  contents: write
+  packages: write
+  actions: read
+
+jobs:
+  build-and-test:
+    name:  Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name:  Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Récupère tout l'historique pour GitVersion
+    
+    - name:  Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name:  Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+    
+    - name:  Build project
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+    
+    - name:  Run tests (if any)
+      run: |
+        if [ -d "tests" ] || [ -d "test" ] || [ -d "Tests" ]; then
+          dotnet test --configuration Release --no-build --verbosity normal
+        else
+          echo " No test projects found"
         fi
 
   publish-nuget:
@@ -93,20 +180,51 @@ jobs:
         tag_name: ${{ github.ref_name }}
         name: Release ${{ github.ref_name }}
         body: |
-          ## ?? Blazor.FlexLoader ${{ steps.version.outputs.VERSION }}
+          ##  Blazor.FlexLoader ${{ steps.version.outputs.VERSION }}
           
-          ### ?? NuGet Package
+          ###  NuGet Package
           ```bash
           dotnet add package Blazor.FlexLoader --version ${{ steps.version.outputs.VERSION }}
           ```
           
-          ### ?? Installation
+          ###  Installation
           ```csharp
           // Program.cs
           builder.Services.AddBlazorFlexLoader();
           ```
           
-          ### ?? Links
+          ###  Links
+          -  [NuGet Package](https://www.nuget.org/packages/Blazor.FlexLoader/${{ steps.version.outputs.VERSION }})
+          -  [Documentation](https://github.com/daniwxcode/Blazor.FlexLoader#readme)
+          -  [Detailed Guide](https://github.com/daniwxcode/Blazor.FlexLoader/blob/main/docs/LoaderService-Documentation.md)
+          
+          See [CHANGELOG.md](https://github.com/daniwxcode/Blazor.FlexLoader/blob/main/CHANGELOG.md) for detailed changes.
+        files: |
+          ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg
+          ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.snupkg
+        draft: false
+        prerelease: false
+        make_latest: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}rops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        body: |
+          ##  Blazor.FlexLoader ${{ steps.version.outputs.VERSION }}
+          
+          ###  NuGet Package
+          ```bash
+          dotnet add package Blazor.FlexLoader --version ${{ steps.version.outputs.VERSION }}
+          ```
+          
+          ###  Installation
+          ```csharp
+          // Program.cs
+          builder.Services.AddBlazorFlexLoader();
+          ```
+          
+          ###  Links
           -  [NuGet Package](https://www.nuget.org/packages/Blazor.FlexLoader/${{ steps.version.outputs.VERSION }})
           -  [Documentation](https://github.com/daniwxcode/Blazor.FlexLoader#readme)
           -  [Detailed Guide](https://github.com/daniwxcode/Blazor.FlexLoader/blob/main/docs/LoaderService-Documentation.md)
