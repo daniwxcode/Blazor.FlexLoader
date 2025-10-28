@@ -1,4 +1,4 @@
-﻿name: CI
+﻿name: ?? Continuous Integration
 
 on:
   push:
@@ -8,101 +8,117 @@ on:
 
 env:
   DOTNET_VERSION: '9.0.x'
-  PROJECT_PATH: ./Blazor.FlexLoader.csproj
+  PROJECT_PATH: './Blazor.FlexLoader.csproj'
 
 jobs:
-  build-validate:
-    name: Build & Validate
+  ci:
+    name: ?? Build & Validate
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
-      - name: Restore dependencies
-        run: dotnet restore ${{ env.PROJECT_PATH }}
-
-      - name: Build project
-        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
-
-      - name: Run tests (if any)
-        shell: bash
-        run: |
-          if find . -type f -name "*Tests.csproj" | grep -q .; then
-            dotnet test --configuration Release --no-build --verbosity normal
-          else
-            echo "No test projects found"
-          fi
-
-      - name: Create test package
-        run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./test-packages
-
-      - name: Validate package
-        shell: bash
-        run: |
-          echo "Generated packages:"
-          ls -la ./test-packages/ || true
-          if compgen -G "./test-packages/*.nupkg" > /dev/null; then
-            echo "✅ Package created successfully"
-          else
-            echo "❌ Failed to create package"
-            exit 1
-          fi
-
-      - name: Upload package artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuget-packages
-          path: ./test-packages/*.nupkg
-          retention-days: 7
+    - name: ?? Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: ?? Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: ?? Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+    
+    - name: ?? Build project
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+    
+    - name: ?? Run tests (if any)
+      run: |
+        if [ -d "tests" ] || [ -d "test" ] || [ -d "Tests" ]; then
+          dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        else
+          echo "?? No test projects found"
+        fi
+    
+    - name: ?? Create test package
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ./test-packages
+    
+    - name: ? Validate package
+      run: |
+        echo "?? Generated packages:"
+        ls -la ./test-packages/
+        
+        # Vérifier que le package contient les fichiers attendus
+        if [ -f "./test-packages/Blazor.FlexLoader.*.nupkg" ]; then
+          echo "? Package créé avec succès"
+        else
+          echo "? Échec de création du package"
+          exit 1
+        fi
+    
+    - name: ?? Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: ./test-packages/*.nupkg
+        retention-days: 7
 
   code-quality:
-    name: Code Quality
+    name: ?? Code Quality
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Restore dependencies
-        run: dotnet restore ${{ env.PROJECT_PATH }}
-
-      - name: Check code format
-        run: dotnet format --verify-no-changes || echo "Code formatting issues detected"
-
-      - name: Analyze code (warnings as errors)
-        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release /p:TreatWarningsAsErrors=true
+    - name: ?? Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: ?? Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: ?? Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+    
+    - name: ?? Format check
+      run: dotnet format --verify-no-changes --verbosity normal ${{ env.PROJECT_PATH }}
+    
+    - name: ?? Analyze code
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --verbosity normal /p:TreatWarningsAsErrors=true
 
   documentation:
-    name: Documentation Check
+    name: ?? Documentation Check
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check mandatory documentation files
-        shell: bash
-        run: |
-          for f in README.md CHANGELOG.md LICENSE docs/LoaderService-Documentation.md; do
-            if [ ! -f "$f" ]; then
-              echo "❌ Missing file: $f"
-              exit 1
-            fi
-            echo "✅ $f present"
-          done
+    - name: ?? Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: ?? Check README
+      run: |
+        if [ ! -f "README.md" ]; then
+          echo "? README.md manquant"
+          exit 1
+        fi
+        echo "? README.md présent"
+    
+    - name: ?? Check CHANGELOG
+      run: |
+        if [ ! -f "CHANGELOG.md" ]; then
+          echo "? CHANGELOG.md manquant"
+          exit 1
+        fi
+        echo "? CHANGELOG.md présent"
+    
+    - name: ?? Check Documentation
+      run: |
+        if [ ! -f "docs/LoaderService-Documentation.md" ]; then
+          echo "? Documentation détaillée manquante"
+          exit 1
+        fi
+        echo "? Documentation complète présente"
+    
+    - name: ?? Check License
+      run: |
+        if [ ! -f "LICENSE" ]; then
+          echo "? LICENSE manquant"
+          exit 1
+        fi
+        echo "? LICENSE présent"
