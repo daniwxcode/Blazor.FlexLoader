@@ -1,8 +1,8 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
-using Blazor.FlexLoader.Services;
 using Blazor.FlexLoader.Handlers;
 using Blazor.FlexLoader.Options;
+using Blazor.FlexLoader.Services;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Blazor.FlexLoader.Extensions;
 
@@ -15,29 +15,29 @@ namespace Blazor.FlexLoader.Extensions;
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Ajoute les services Blazor.FlexLoader à la collection de services.
+    /// Ajoute les services Blazor.FlexLoader Ã  la collection de services.
     /// Enregistre le <see cref="LoaderService"/> comme service scoped.
     /// </summary>
     /// <param name="services">Collection de services.</param>
-    /// <returns>Collection de services pour chaînage.</returns>
+    /// <returns>Collection de services pour chaÃ®nage.</returns>
     /// <remarks>
     /// Adds Blazor.FlexLoader services to the service collection.
     /// Registers the <see cref="LoaderService"/> as a scoped service.
     /// </remarks>
     public static IServiceCollection AddBlazorFlexLoader(this IServiceCollection services)
     {
-      services.AddScoped<LoaderService>();
+        services.AddScoped<LoaderService>();
         return services;
     }
 
     /// <summary>
-    /// Ajoute les services Blazor.FlexLoader avec interception automatique des requêtes HTTP.
+    /// Ajoute les services Blazor.FlexLoader avec interception automatique des requÃªtes HTTP.
     /// Configure un <see cref="HttpClient"/> avec le <see cref="HttpCallInterceptorHandler"/> 
     /// pour afficher automatiquement le loader lors des appels HTTP.
     /// </summary>
     /// <param name="services">Collection de services.</param>
     /// <param name="configureClient">Action optionnelle pour configurer le HttpClient.</param>
-    /// <returns>Collection de services pour chaînage.</returns>
+    /// <returns>Collection de services pour chaÃ®nage.</returns>
     /// <example>
     /// <code>
     /// // Dans Program.cs
@@ -48,7 +48,7 @@ public static class ServiceCollectionExtensions
     /// </code>
     /// </example>
     /// <remarks>
-  /// Adds Blazor.FlexLoader services with automatic HTTP request interception.
+    /// Adds Blazor.FlexLoader services with automatic HTTP request interception.
     /// Configures an <see cref="HttpClient"/> with the <see cref="HttpCallInterceptorHandler"/> 
     /// to automatically display the loader during HTTP calls.
     /// </remarks>
@@ -60,17 +60,17 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Ajoute les services Blazor.FlexLoader avec interception automatique des requêtes HTTP et options personnalisées.
+    /// Ajoute les services Blazor.FlexLoader avec interception automatique des requÃªtes HTTP et options personnalisÃ©es.
     /// Configure un <see cref="HttpClient"/> avec le <see cref="HttpCallInterceptorHandler"/> 
     /// pour afficher automatiquement le loader lors des appels HTTP.
     /// </summary>
     /// <param name="services">Collection de services.</param>
     /// <param name="configureClient">Action optionnelle pour configurer le HttpClient.</param>
     /// <param name="configureOptions">Action optionnelle pour configurer les options d'interception.</param>
-    /// <returns>Collection de services pour chaînage.</returns>
+    /// <returns>Collection de services pour chaÃ®nage.</returns>
     /// <example>
     /// <code>
-    /// // Configuration avancée avec options
+    /// // Configuration avancÃ©e avec options
     /// builder.Services.AddBlazorFlexLoaderWithHttpInterceptor(
     ///     client =>
     ///     {
@@ -96,33 +96,33 @@ public static class ServiceCollectionExtensions
     /// Configures an <see cref="HttpClient"/> with the <see cref="HttpCallInterceptorHandler"/> 
     /// to automatically display the loader during HTTP calls.
     /// </remarks>
- public static IServiceCollection AddBlazorFlexLoaderWithHttpInterceptor(
-        this IServiceCollection services,
-        Action<HttpClient>? configureClient = null,
-        Action<HttpInterceptorOptions>? configureOptions = null)
+    public static IServiceCollection AddBlazorFlexLoaderWithHttpInterceptor(
+           this IServiceCollection services,
+           Action<HttpClient>? configureClient = null,
+           Action<HttpInterceptorOptions>? configureOptions = null)
     {
-      services.AddScoped<LoaderService>();
+        services.AddScoped<LoaderService>();
 
         // Configure les options
         var options = new HttpInterceptorOptions();
-      configureOptions?.Invoke(options);
+        configureOptions?.Invoke(options);
 
-        // Enregistre les options comme singleton pour qu'elles soient partagées
+        // Enregistre les options comme singleton pour qu'elles soient partagÃ©es
         services.AddSingleton(options);
 
         // Enregistre le handler comme transient avec les options
-      services.AddTransient<HttpCallInterceptorHandler>(sp =>
-        {
-            var loaderService = sp.GetRequiredService<LoaderService>();
-          var interceptorOptions = sp.GetRequiredService<HttpInterceptorOptions>();
-            var logger = sp.GetService<Microsoft.Extensions.Logging.ILogger<HttpCallInterceptorHandler>>();
- return new HttpCallInterceptorHandler(loaderService, interceptorOptions, logger);
-     });
+        services.AddTransient<HttpCallInterceptorHandler>(sp =>
+          {
+              var loaderService = sp.GetRequiredService<LoaderService>();
+              var interceptorOptions = sp.GetRequiredService<HttpInterceptorOptions>();
+              var logger = sp.GetService<Microsoft.Extensions.Logging.ILogger<HttpCallInterceptorHandler>>();
+              return new HttpCallInterceptorHandler(loaderService, interceptorOptions, logger);
+          });
 
         services.AddHttpClient("BlazorFlexLoader", client =>
       {
-            configureClient?.Invoke(client);
-        })
+          configureClient?.Invoke(client);
+      })
         .AddHttpMessageHandler<HttpCallInterceptorHandler>();
 
         return services;

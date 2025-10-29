@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*.*.*'  # Déclenche sur les tags de version (ex: v1.2.0)
   workflow_dispatch:  # Permet l'exécution manuelle
+    inputs:
+      version:
+        description: 'Version to publish (leave empty to use csproj version)'
+        required: false
+        type: string
 
 env:
   DOTNET_VERSION: '9.0.x'
@@ -37,7 +42,7 @@ jobs:
       run: dotnet restore ${{ env.PROJECT_PATH }}
     
     - name: ?? Build project
-      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
     
     - name: ?? Run tests (if any)
       run: |
@@ -51,7 +56,8 @@ jobs:
     name: ?? Publish to NuGet
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Se déclenche si c'est un tag OU une exécution manuelle
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     
     steps:
     - name: ?? Checkout repository
@@ -66,10 +72,19 @@ jobs:
       run: dotnet restore ${{ env.PROJECT_PATH }}
     
     - name: ?? Build project
-      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore /p:ContinuousIntegrationBuild=true
     
     - name: ?? Create NuGet package
       run: dotnet pack ${{ env.PROJECT_PATH }} --configuration Release --no-build --output ${{ env.PACKAGE_OUTPUT_DIRECTORY }}
+    
+    - name: ?? Verify NuGet API key
+      shell: bash
+      run: |
+        if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
+          echo "? NUGET_API_KEY secret is not set. Configure it in repository Settings > Secrets and variables > Actions."
+          exit 1
+        fi
+        echo "? NUGET_API_KEY is configured"
     
     - name: ?? Publish to NuGet.org
       run: |
@@ -80,11 +95,32 @@ jobs:
       env:
         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
     
+    - name: ?? Publish symbols to NuGet.org
+      run: |
+        dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.snupkg" \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate || true
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+    
     - name: ?? Extract version from tag
       id: version
-      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            # Extraire la version du fichier .csproj
+            VERSION=$(grep -oP '<Version>\K[^<]+' ${{ env.PROJECT_PATH }})
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        fi
     
     - name: ?? Create GitHub Release
+      if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ github.ref_name }}
@@ -96,13 +132,13 @@ jobs:
           ```bash
           dotnet add package Blazor.FlexLoader --version ${{ steps.version.outputs.VERSION }}
           ```
-          
+    
           ### ?? Installation
           ```csharp
           // Program.cs
           builder.Services.AddBlazorFlexLoader();
           ```
-          
+  
           ### ?? Links
           - ?? [NuGet Package](https://www.nuget.org/packages/Blazor.FlexLoader/${{ steps.version.outputs.VERSION }})
           - ?? [Documentation](https://github.com/daniwxcode/Blazor.FlexLoader#readme)
@@ -117,3 +153,10 @@ jobs:
         make_latest: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: ?? Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-published-artifacts
+        path: ${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*
+        retention-days: 30
