@@ -1,17 +1,23 @@
-name: Publish to NuGet
+name: Publish to NuGet (DEPRECATED - Use nuget-publish.yml with tags)
 
+# Ce workflow est désactivé pour éviter les conflits.
+# Utilisez plutôt le workflow nuget-publish.yml en créant des tags vX.X.X
 on:
- push:
- branches:
- - main
- paths:
- - 'Blazor.FlexLoader.csproj'
- - '**/*.cs'
- - '**/*.razor'
- - '**/*.csproj'
- - '!docs/**'
- - '!assets/**'
- - '!.github/**'
+  workflow_dispatch:  # Permet uniquement l'exécution manuelle
+
+# ANCIEN DÉCLENCHEUR (DÉSACTIVÉ):
+# on:
+#  push:
+#  branches:
+#  - main
+#  paths:
+#  - 'Blazor.FlexLoader.csproj'
+#  - '**/*.cs'
+#  - '**/*.razor'
+#  - '**/*.csproj'
+#  - '!docs/**'
+#  - '!assets/**'
+#  - '!.github/**'
 
 env:
  DOTNET_VERSION: '9.0.x'
@@ -77,4 +83,4 @@ jobs:
  with:
  name: nuget-published-artifacts
  path: ./artifacts/*
- retention-days:7
+ retention-days: 7

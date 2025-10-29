@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include=".github\workflows\publish.yml" />
+    <None Include=".github\workflows\README.md" />
   </ItemGroup>
 
 </Project>
